@@ -1,7 +1,7 @@
 package mysqlDB
 
 import (
-	"code.ts.co.ir/gaplib/golib/cast"
+	"cloud_1400/pkg/cast"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"
