@@ -10,6 +10,7 @@ import (
 	"database/sql"
 	"errors"
 	"go.uber.org/zap"
+	"sort"
 )
 
 type gameRepository struct {
@@ -23,6 +24,7 @@ var Repo Repository
 
 type Repository interface {
 	GetByRank(spanCtx context.Context, rank int) (dataModel.GameSales, bool, string, error)
+	GetByName(spanCtx context.Context, name string) ([]dataModel.GameSales, string, error)
 }
 
 func init() {
@@ -53,4 +55,15 @@ func (repo *gameRepository) GetByRank(spanCtx context.Context, rank int) (game d
 		}
 	}
 	return game, true, "", nil
+}
+func (repo *gameRepository) GetByName(spanCtx context.Context, name string) ([]dataModel.GameSales, string, error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	games, err := repo.mysqlDS.GetByName(spanCtx, name)
+	if err != nil {
+		zap.L().Error("get by name err", zap.String("traceID", traceID), zap.Error(err))
+	}
+	sort.Slice(games, func(i, j int) bool {
+		return games[i].Rank > games[j].Rank
+	})
+	return games, "01", err
 }
