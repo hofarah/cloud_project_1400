@@ -25,6 +25,7 @@ var Repo Repository
 type Repository interface {
 	GetByRank(spanCtx context.Context, rank int) (dataModel.GameSales, bool, string, error)
 	GetByName(spanCtx context.Context, name string) ([]dataModel.GameSales, string, error)
+	GetBestOnPlatform(spanCtx context.Context, platform string, N int) ([]dataModel.GameSales, string, error)
 }
 
 func init() {
@@ -65,5 +66,13 @@ func (repo *gameRepository) GetByName(spanCtx context.Context, name string) ([]d
 	sort.Slice(games, func(i, j int) bool {
 		return games[i].Rank > games[j].Rank
 	})
+	return games, "01", err
+}
+func (repo *gameRepository) GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, errStr string, err error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	games, err = repo.mysqlDS.GetBestOnPlatform(spanCtx, platform, N)
+	if err != nil {
+		zap.L().Error("get by platform err", zap.String("traceID", traceID), zap.Error(err))
+	}
 	return games, "01", err
 }

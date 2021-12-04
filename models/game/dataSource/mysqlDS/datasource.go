@@ -20,6 +20,7 @@ var mysqlDS MysqlDS
 type MysqlDS interface {
 	GetByName(spanCtx context.Context, name string) (games []dataModel.GameSales, err error)
 	GetByRank(spanCtx context.Context, rank int) (game dataModel.GameSales, err error)
+	GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error)
 }
 
 func init() {
@@ -91,4 +92,40 @@ func (mysqlDS *mysqlDataSource) GetByRank(spanCtx context.Context, rank int) (ga
 		zap.L().Error("select games by rank err", zap.String("traceID", traceID), zap.Error(err))
 	}
 	return game, err
+}
+func (mysqlDS *mysqlDataSource) GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error) {
+	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on platform")
+	defer logger.FinishSpan(dbSpan)
+
+	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE Platform=? ORDER BY Rank ASC LIMIT ?", platform, N)
+	if err != nil {
+		zap.L().Error("select games by platform err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, err
+	}
+	defer rows.Close()
+
+	games = make([]dataModel.GameSales, 0)
+	for rows.Next() {
+		game := dataModel.GameSales{}
+		err = rows.Scan(
+			&game.Rank,
+			&game.Name,
+			&game.Platform,
+			&game.Year,
+			&game.Genre,
+			&game.Publisher,
+			&game.NASales,
+			&game.EUSales,
+			&game.JPSales,
+			&game.OtherSales,
+			&game.GlobalSales,
+		)
+		if err != nil {
+			logger.JaegerErrorLog(dbSpan, err)
+			zap.L().Error("scan err", zap.String("traceID", traceID), zap.Error(err))
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, nil
 }

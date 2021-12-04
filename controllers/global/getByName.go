@@ -14,7 +14,7 @@ func GetByName(ctx *fiber.Ctx) error {
 	games, errStr, err := gameRepo.Repo.GetByName(spanCtx, ctx.Query("name"))
 	if err != nil {
 		zap.L().Error("get by name err", zap.String("traceID", traceID), zap.Error(err))
-		return mainController.Error(ctx, "01", errStr, 200, err.Error())
+		return mainController.Error(ctx, "01", errStr, 500)
 	}
 	return mainController.Response(ctx, games)
 }
