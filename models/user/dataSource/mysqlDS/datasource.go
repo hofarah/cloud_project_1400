@@ -54,6 +54,7 @@ func (mysqlDS *mysqlDataSource) GetByUserName(spanCtx context.Context, username 
 		&user.Secret,
 	)
 	if err != nil {
+		logger.JaegerErrorLog(dbSpan, err)
 		zap.L().Error("select user by username err", zap.String("traceID", traceID), zap.Error(err))
 	}
 	return user, err

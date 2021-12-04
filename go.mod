@@ -13,14 +13,8 @@ require (
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible
 	go.uber.org/zap v1.19.1
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+    github.com/valyala/fasthttp v1.31.0
+    github.com/wcharczuk/go-chart/v2 v2.1.0
 )
 
-require (
-	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
-	github.com/blend/go-sdk v1.20211025.3 // indirect
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/valyala/fasthttp v1.31.0
-	github.com/wcharczuk/go-chart v2.0.1+incompatible
-	github.com/wcharczuk/go-chart/v2 v2.1.0
-	golang.org/x/image v0.0.0-20211028202545-6944b10bf410 // indirect
-)
