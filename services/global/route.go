@@ -11,6 +11,7 @@ var routes = map[string]string{
 	"getByName":         "/global/get/byName",
 	"getBestOnPlatform": "/global/get/bestOnPlatform",
 	"getBestOnYear":     "/global/get/bestOnYear",
+	"getBestOnGenre":    "/global/get/bestOnGenre",
 }
 
 func setUpRoutes(app *fiber.App) {
@@ -19,4 +20,5 @@ func setUpRoutes(app *fiber.App) {
 	app.Get(routes["getByName"], GetByName)
 	app.Get(routes["getBestOnPlatform"], GetBestOnPlatform)
 	app.Get(routes["getBestOnYear"], GetBestOnYear)
+	app.Get(routes["getBestOnGenre"], GetBestOnGenre)
 }
