@@ -7,4 +7,5 @@ var englishMessage = map[string]string{
 	"errorOccurred":       "An error occurred",
 	"userNameRequired":    "entrance username is required",
 	"repetitiousUserName": "Username is repetitious",
+	"gameNotFound":        "game not found with this rank",
 }

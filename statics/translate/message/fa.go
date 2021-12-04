@@ -7,4 +7,5 @@ var persianMessage = map[string]string{
 	"errorOccurred":       "خطایی رخ داده است",
 	"userNameRequired":    "لطفا نام کاربری را وارد کنید",
 	"repetitiousUserName": "نام کاربری تکراری است",
+	"gameNotFound":        "بازی با این رنک پیدا نشد",
 }
