@@ -27,6 +27,7 @@ type Repository interface {
 	GetByName(spanCtx context.Context, name string) ([]dataModel.GameSales, string, error)
 	GetBestOnPlatform(spanCtx context.Context, platform string, N int) ([]dataModel.GameSales, string, error)
 	GetBestOnYear(spanCtx context.Context, year, N int) (games []dataModel.GameSales, errStr string, err error)
+	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, errStr string, err error)
 }
 
 func init() {
@@ -83,6 +84,14 @@ func (repo *gameRepository) GetBestOnYear(spanCtx context.Context, year, N int) 
 	games, err = repo.mysqlDS.GetBestOnYear(spanCtx, year, N)
 	if err != nil {
 		zap.L().Error("get by year err", zap.String("traceID", traceID), zap.Error(err))
+	}
+	return games, "01", err
+}
+func (repo *gameRepository) GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, errStr string, err error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	games, err = repo.mysqlDS.GetBestOnGenre(spanCtx, genre, N)
+	if err != nil {
+		zap.L().Error("get by genre err", zap.String("traceID", traceID), zap.Error(err))
 	}
 	return games, "01", err
 }
