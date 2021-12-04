@@ -8,35 +8,37 @@ import (
 	"net/http"
 )
 
-func HttpRequest(method, url string, request, response interface{}, headers map[string]string, encryption ...bool) error {
+func HttpRequest(method, url string, request, response interface{}, headers map[string]string, encryption ...bool) (int, error) {
 
 	dataBytes, err := jsoniter.Marshal(request)
 	if err != nil {
-		return err
+		return 400, err
 	}
 	var buff = &bytes.Buffer{}
 	buff.Write(dataBytes)
 	req, err := http.NewRequest(method, url, buff)
 	if err != nil {
-		return err
+		return 400, err
 	}
 	for key, value := range headers {
 		req.Header.Add(key, value)
 	}
-	cli := &http.Client{}
+	cli := &http.Client{
+		Transport: &FastTransport{},
+	}
 	res, err := cli.Do(req)
 	if err != nil {
-		return err
+		return 400, err
 	}
 	resBytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return err
+		return 400, err
 	}
 	err = jsoniter.Unmarshal(resBytes, response)
 	if err != nil {
-		return err
+		return 400, err
 	}
-	return nil
+	return res.StatusCode, nil
 }
 
 func HttpFormRequest(url, fileName string, data []byte, response interface{}) error {
