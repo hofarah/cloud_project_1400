@@ -22,6 +22,7 @@ type MysqlDS interface {
 	GetByRank(spanCtx context.Context, rank int) (game dataModel.GameSales, err error)
 	GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error)
 	GetBestOnYear(spanCtx context.Context, year, N int) (games []dataModel.GameSales, err error)
+	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, err error)
 }
 
 func init() {
@@ -139,6 +140,43 @@ func (mysqlDS *mysqlDataSource) GetBestOnYear(spanCtx context.Context, year, N i
 	if err != nil {
 		logger.JaegerErrorLog(dbSpan, err)
 		zap.L().Error("select games by platform err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, err
+	}
+	defer rows.Close()
+
+	games = make([]dataModel.GameSales, 0)
+	for rows.Next() {
+		game := dataModel.GameSales{}
+		err = rows.Scan(
+			&game.Rank,
+			&game.Name,
+			&game.Platform,
+			&game.Year,
+			&game.Genre,
+			&game.Publisher,
+			&game.NASales,
+			&game.EUSales,
+			&game.JPSales,
+			&game.OtherSales,
+			&game.GlobalSales,
+		)
+		if err != nil {
+			logger.JaegerErrorLog(dbSpan, err)
+			zap.L().Error("scan err", zap.String("traceID", traceID), zap.Error(err))
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, nil
+}
+func (mysqlDS *mysqlDataSource) GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, err error) {
+	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on genre")
+	defer logger.FinishSpan(dbSpan)
+
+	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE Genre=? ORDER BY Rank ASC LIMIT ?", genre, N)
+	if err != nil {
+		logger.JaegerErrorLog(dbSpan, err)
+		zap.L().Error("select games by genre err", zap.String("traceID", traceID), zap.Error(err))
 		return nil, err
 	}
 	defer rows.Close()
