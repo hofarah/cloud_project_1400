@@ -11,6 +11,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	jsoniter "github.com/json-iterator/go"
 	"github.com/opentracing/opentracing-go"
+	goPrometheus "github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"go.uber.org/zap"
+	"net/http"
 	"strconv"
 )
 
@@ -148,6 +152,30 @@ func InitAPI(ctx *fiber.Ctx, baseErrCode, apiName string) (context.Context, stri
 	SetAPIBaseErrCode(ctx, baseErrCode)
 	_, traceID := StartAPISpan(ctx, apiName)
 	return GetContextWithSpan(ctx), traceID
+}
+func StartPrometheus(routes map[string]string) {
+	metrics := make([]prometheus.Metric, len(routes))
+	statistics := make([]*prometheus.Stats, len(routes))
+	serviceStats = make(map[string]*prometheus.Stats)
+	i := 0
+	for name, url := range routes {
+		metrics[i] = prometheus.Metric{Name: name}
+		stats := &prometheus.Stats{}
+		statistics[i] = stats
+		serviceStats[url] = stats
+		i++
+	}
+	collector := prometheus.NewCollector()
+	collector.BulkAddAPIMetric(metrics, statistics)
+	go func() {
+		goPrometheus.MustRegister(collector)
+		http.Handle("/metrics", promhttp.Handler())
+		zap.L().Info("metrics to serve on port :8080")
+		err := http.ListenAndServe(":8080", nil)
+		if err != nil {
+			panic(err)
+		}
+	}()
 }
 func getAPIStats(url string) *prometheus.Stats {
 	if _, found := serviceStats[url]; found {
