@@ -6,10 +6,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-var routes = map[string]string{}
+var routes = map[string]string{
+	"getByRank": "/global/get/byRank",
+	"getByName": "/global/get/byName",
+}
 
 func setUpRoutes(app *fiber.App) {
 	app.Use(middlewares.Auth)
-	global := app.Group("/global")
-	global.Get("/get/byRank", GetByRank)
+	app.Get(routes["getByRank"], GetByRank)
+	app.Get(routes["getByName"], GetByName)
 }
