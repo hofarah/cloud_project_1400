@@ -1,4 +1,4 @@
-package dataAnalyticController
+package dataAnalytic
 
 import (
 	"cloudProject/controllers/mainController"

@@ -1,12 +1,18 @@
 package game
 
 import (
-	"cloudProject/models/user/dataSource/cacheDS"
-	"cloudProject/models/user/dataSource/mysqlDS"
+	"cloudProject/models/game/dataModel"
+	"cloudProject/models/game/dataSource/cacheDS"
+	"cloudProject/models/game/dataSource/mysqlDS"
+	"cloudProject/pkg/logger"
+	"cloudProject/pkg/redis"
+	"context"
 	"database/sql"
+	"errors"
+	"go.uber.org/zap"
 )
 
-type userRepository struct {
+type gameRepository struct {
 	mysqlDS mysqlDS.MysqlDS
 	cacheDS cacheDS.RedisDS
 }
@@ -16,11 +22,35 @@ var gameNotFoundErr = sql.ErrNoRows
 var Repo Repository
 
 type Repository interface {
+	GetByRank(spanCtx context.Context, rank int) (dataModel.GameSales, bool, string, error)
 }
 
 func init() {
-	Repo = &userRepository{
+	Repo = &gameRepository{
 		mysqlDS: mysqlDS.GetDataSource(),
 		cacheDS: cacheDS.GetDataSource(),
 	}
+}
+
+func (repo *gameRepository) GetByRank(spanCtx context.Context, rank int) (game dataModel.GameSales, exist bool, errStr string, err error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	game, err = repo.cacheDS.GetFromCacheByRank(rank)
+	if err != nil {
+		if err != redis.NotFoundInCacheErr {
+			zap.L().Error("get from cache err", zap.String("traceID", traceID), zap.Error(err))
+		}
+		game, err = repo.mysqlDS.GetByRank(spanCtx, rank)
+		if err != nil {
+			if err == gameNotFoundErr {
+				return dataModel.GameSales{}, false, "", errors.New("gameNotFound")
+			}
+			zap.L().Error("get by rank err", zap.String("traceID", traceID), zap.Error(err))
+			return dataModel.GameSales{}, false, "01", err
+		}
+		err = repo.cacheDS.SetToCache(game.Rank, game)
+		if err != nil {
+			zap.L().Error("set to cache err", zap.String("traceID", traceID), zap.Error(err))
+		}
+	}
+	return game, true, "", nil
 }

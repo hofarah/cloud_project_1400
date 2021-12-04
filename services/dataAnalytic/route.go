@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cloudProject/controllers/dataAnalyticController"
+	"cloudProject/controllers/dataAnalytic"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -13,8 +13,8 @@ var routes = map[string]string{
 }
 
 func setupRoute(app *fiber.App) {
-	app.Get(routes["genreSells"], dataAnalyticController.GenreSells)
-	app.Get(routes["producerSells"], dataAnalyticController.ProducerSells)
-	app.Get(routes["sellsCompare2Game"], dataAnalyticController.SellsCompare2Game)
-	app.Get(routes["sumSellAnnually"], dataAnalyticController.SumSellAnnually)
+	app.Get(routes["genreSells"], dataAnalytic.GenreSells)
+	app.Get(routes["producerSells"], dataAnalytic.ProducerSells)
+	app.Get(routes["sellsCompare2Game"], dataAnalytic.SellsCompare2Game)
+	app.Get(routes["sumSellAnnually"], dataAnalytic.SumSellAnnually)
 }
