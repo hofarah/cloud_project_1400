@@ -3,11 +3,14 @@ package mainController
 import (
 	"cloudProject/apiSchema/common"
 	"cloudProject/pkg/cast"
+	"cloudProject/pkg/logger"
 	"cloudProject/pkg/prometheus"
 	"cloudProject/pkg/utils"
 	translate "cloudProject/statics/translate/message"
+	"context"
 	"github.com/gofiber/fiber/v2"
 	jsoniter "github.com/json-iterator/go"
+	"github.com/opentracing/opentracing-go"
 	"strconv"
 )
 
@@ -88,4 +91,67 @@ func Error(ctx *fiber.Ctx, section, errStr string, code int, msg ...string) erro
 	ctx.Status(code)
 	getAPIStats(ctx.OriginalURL()).AddError()
 	return prepareBody(ctx, res)
+}
+func SetAPIBaseErrCode(ctx *fiber.Ctx, baseErrCode string) {
+	ctx.Locals("baseErrCode", baseErrCode)
+}
+func GetAPIBaseErrCode(ctx *fiber.Ctx) string {
+	base, _ := cast.ToString(ctx.Locals("baseErrCode"))
+	return base
+}
+func GetAcceptLanguage(ctx *fiber.Ctx) string {
+	return ctx.Get(fiber.HeaderAcceptLanguage, "fa")
+}
+func GetParentSpan(ctx *fiber.Ctx) opentracing.Span {
+	var parentSpan opentracing.Span
+	span := ctx.Locals("parentSpan")
+	if span != nil {
+		ok := false
+		parentSpan, ok = span.(opentracing.Span)
+		if ok {
+			return parentSpan
+		}
+	}
+	return nil
+}
+func GetTracer() opentracing.Tracer {
+	return opentracing.GlobalTracer()
+}
+func StartAPISpan(ctx *fiber.Ctx, apiName string) (apiSpan opentracing.Span, traceID string) {
+	parentSpan := GetParentSpan(ctx)
+	tracer := GetTracer()
+	if parentSpan != nil && tracer != nil {
+		apiSpan = tracer.StartSpan(apiName, opentracing.ChildOf(parentSpan.Context()))
+		traceID = logger.GetTraceIDFromSpan(apiSpan)
+		ctx.Locals("apiSpan", apiSpan)
+	}
+	return apiSpan, traceID
+}
+func FinishAPISpan(ctx *fiber.Ctx) {
+	apiSpan := GetAPISpan(ctx)
+	logger.FinishSpan(apiSpan)
+	parentSpan := GetParentSpan(ctx)
+	logger.FinishSpan(parentSpan)
+}
+func GetAPISpan(ctx *fiber.Ctx) opentracing.Span {
+	span, ok := ctx.Locals("apiSpan").(opentracing.Span)
+	if !ok {
+		return nil
+	}
+	return span
+}
+func GetContextWithSpan(ctx *fiber.Ctx) context.Context {
+	cntx := opentracing.ContextWithSpan(ctx.Context(), GetAPISpan(ctx))
+	return cntx
+}
+func InitAPI(ctx *fiber.Ctx, baseErrCode, apiName string) (context.Context, string) {
+	SetAPIBaseErrCode(ctx, baseErrCode)
+	_, traceID := StartAPISpan(ctx, apiName)
+	return GetContextWithSpan(ctx), traceID
+}
+func getAPIStats(url string) *prometheus.Stats {
+	if _, found := serviceStats[url]; found {
+		return serviceStats[url]
+	}
+	return nil
 }
