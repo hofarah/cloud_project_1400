@@ -1,7 +1,7 @@
 package prometheus
 
 import (
-	"cloud_1400/pkg/cast"
+	"cloudProject/pkg/cast"
 	"sync/atomic"
 )
 

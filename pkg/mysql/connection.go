@@ -1,7 +1,7 @@
 package mysqlDB
 
 import (
-	"cloud_1400/pkg/cast"
+	"cloudProject/pkg/cast"
 	"database/sql"
 	_ "github.com/go-sql-driver/mysql"
 	"go.uber.org/zap"

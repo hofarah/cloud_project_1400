@@ -1,7 +1,7 @@
 package prometheus
 
 import (
-	"cloud_1400/pkg/cast"
+	"cloudProject/pkg/cast"
 	"github.com/prometheus/client_golang/prometheus"
 	"go.uber.org/zap"
 	"runtime"
