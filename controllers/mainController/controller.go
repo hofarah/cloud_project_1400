@@ -36,6 +36,7 @@ func prepareBody(ctx *fiber.Ctx, body interface{}) error {
 	if err != nil {
 		return err
 	}
+	ctx.Set("content-type", fiber.MIMEApplicationJSONCharsetUTF8)
 	_, _ = ctx.Write(data)
 	return nil
 }
