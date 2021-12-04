@@ -8,8 +8,8 @@ import (
 )
 
 type Payload struct {
-	UserID int64 `json:"user_id"`
-	Exp    int64 `json:"exp"`
+	Username string `json:"username"`
+	Exp      int64  `json:"exp"`
 }
 
 var ErrExpiredToken = errors.New("token has expired")
@@ -22,11 +22,11 @@ func (payload *Payload) Valid() error {
 	return nil
 }
 
-func CreateToken(userID int64) (string, error) {
+func CreateToken(username string) (string, error) {
 	var err error
 	payload := Payload{
-		UserID: userID,
-		Exp:    time.Now().Add(time.Hour * 12).Unix(),
+		Username: username,
+		Exp:      time.Now().Add(time.Hour * 12).Unix(),
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, &payload)
