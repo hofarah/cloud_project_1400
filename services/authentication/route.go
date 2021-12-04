@@ -15,4 +15,5 @@ func setUpRoutes(app *fiber.App) {
 	app.Use(middlewares.CheckRequiredHeaders)
 	authentication := app.Group("/authentication")
 	authentication.Post("/signup", SignUp)
+	authentication.Get("/check", Check)
 }
