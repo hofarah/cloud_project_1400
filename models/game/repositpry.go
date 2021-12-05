@@ -34,6 +34,7 @@ type Repository interface {
 	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, errStr string, err error)
 	GetProducerOnYears(spanCtx context.Context, p1, p2 string, from, to int) (data map[string][]chart.Value, errStr string, err error)
 	GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, errStr string, err error)
+	GetGamesSell(spanCtx context.Context, game1, game2 string) (data map[string][]chart.Value, errStr string, err error)
 }
 
 func init() {
@@ -161,5 +162,32 @@ func (repo *gameRepository) GetProducerOnYears(spanCtx context.Context, p1, p2 s
 	var data = make(map[string][]chart.Value)
 	data[p1] = data1
 	data[p2] = data2
+	return data, "01", err
+}
+
+func (repo *gameRepository) GetGamesSell(spanCtx context.Context, game1, game2 string) (map[string][]chart.Value, string, error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	var data1, data2 []chart.Value
+	g1data, err := repo.mysqlDS.GetGameSells(spanCtx, game1)
+	if err != nil {
+		zap.L().Error("get game sales err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, "01", err
+	}
+	g2data, err := repo.mysqlDS.GetGameSells(spanCtx, game2)
+	if err != nil {
+		zap.L().Error("get game sales err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, "02", err
+	}
+	var data = make(map[string][]chart.Value)
+	data1 = append(data1, chart.Value{Label: "Global_Sales", Value: g1data.GlobalSales}, chart.Value{Label: "NA_Sales", Value: g1data.NASales},
+		chart.Value{Label: "EU_Sales", Value: g1data.EUSales}, chart.Value{Label: "JP_Sales", Value: g1data.JPSales},
+		chart.Value{Label: "Other_Sales", Value: g1data.OtherSales})
+
+	data2 = append(data2, chart.Value{Label: "Global_Sales", Value: g2data.GlobalSales}, chart.Value{Label: "NA_Sales", Value: g2data.NASales},
+		chart.Value{Label: "EU_Sales", Value: g2data.EUSales}, chart.Value{Label: "JP_Sales", Value: g2data.JPSales},
+		chart.Value{Label: "Other_Sales", Value: g2data.OtherSales})
+
+	data[game1] = data1
+	data[game2] = data2
 	return data, "01", err
 }
