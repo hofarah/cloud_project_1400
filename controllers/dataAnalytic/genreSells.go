@@ -20,12 +20,12 @@ func GenreSells(ctx *fiber.Ctx) error {
 	data, errStr, err := gameRepo.Repo.GetGenreBetweenYears(spanCtx, startYear, endYear)
 	if err != nil {
 		zap.L().Error("get best on year err", zap.String("traceID", traceID), zap.Error(err))
-		return mainController.Error(ctx, "03", errStr, 500)
+		return mainController.Error(ctx, "01", errStr, 500)
 	}
 	bytes, err := draw.GenreSells(startYear, endYear, data)
 	if err != nil {
 		zap.L().Error("genreSells_draw_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", err.Error(), 500)
+		return mainController.Error(ctx, "02", err.Error(), 500)
 	}
 	ctx.Response().Header.SetContentType("image/png")
 	return ctx.Send(bytes)
