@@ -12,7 +12,7 @@ var routes = map[string]string{
 }
 
 func setUpRoutes(app *fiber.App) {
-	app.Use(middlewares.CheckRequiredHeaders)
+	app.Use(middlewares.CheckRequiredHeaders())
 	app.Post(routes["signup"], SignUp)
 	app.Get(routes["check"], Check)
 }
