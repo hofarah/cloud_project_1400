@@ -31,6 +31,7 @@ type Repository interface {
 	GetBestOnYear(spanCtx context.Context, year, N int) (games []dataModel.GameSales, errStr string, err error)
 	GetBestOnYearAndPlatform(spanCtx context.Context, platform string, year, N int) (games []dataModel.GameSales, errStr string, err error)
 	GetGenreBetweenYears(spanCtx context.Context, from, to int) (data []chart.Value, errStr string, err error)
+	GetYearBetweenYears(spanCtx context.Context, from, to int) (data []chart.Value, errStr string, err error)
 	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, errStr string, err error)
 	GetProducerOnYears(spanCtx context.Context, p1, p2 string, from, to int) (data map[string][]chart.Value, errStr string, err error)
 	GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, errStr string, err error)
@@ -121,6 +122,23 @@ func (repo *gameRepository) GetGenreBetweenYears(spanCtx context.Context, from, 
 		genres = append(genres, chart.Value{Label: game.Genre, Value: game.GlobalSales})
 	}
 	return genres, "01", err
+}
+
+func (repo *gameRepository) GetYearBetweenYears(spanCtx context.Context, from, to int) (years []chart.Value, errStr string, err error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+
+	games, err := repo.mysqlDS.GetOnYears(spanCtx, from, to)
+	if err != nil {
+		zap.L().Error("get by year err", zap.String("traceID", traceID), zap.Error(err))
+	}
+	sort.SliceStable(games, func(i, j int) bool {
+		return games[i].Year < games[j].Year
+	})
+	for _, game := range games {
+		year, _ := cast.ToString(game.Year)
+		years = append(years, chart.Value{Label: year, Value: game.GlobalSales})
+	}
+	return years, "01", err
 }
 
 func (repo *gameRepository) GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, errStr string, err error) {
