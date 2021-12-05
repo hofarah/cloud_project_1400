@@ -27,6 +27,7 @@ type MysqlDS interface {
 	GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, err error)
 	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, err error)
 	GetOnGenres(spanCtx context.Context, from, to int) (games []dataModel.GameSales, err error)
+	GetGameSells(spanCtx context.Context, game string) (g dataModel.GameSales, err error)
 }
 
 func init() {
@@ -99,6 +100,7 @@ func (mysqlDS *mysqlDataSource) GetByRank(spanCtx context.Context, rank int) (ga
 	}
 	return game, err
 }
+
 func (mysqlDS *mysqlDataSource) GetProducerOnYears(spanCtx context.Context, publisher string, from, to int) (games []dataModel.GameSales, err error) {
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game by rank query")
 	defer logger.FinishSpan(dbSpan)
@@ -120,6 +122,24 @@ func (mysqlDS *mysqlDataSource) GetProducerOnYears(spanCtx context.Context, publ
 		games = append(games, game)
 	}
 	return games, err
+}
+
+func (mysqlDS *mysqlDataSource) GetGameSells(spanCtx context.Context, game string) (g dataModel.GameSales, err error) {
+	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game by rank query")
+	defer logger.FinishSpan(dbSpan)
+
+	err = mysqlDS.conn.QueryRow("SELECT SUM(Global_Sales),SUM(NA_Sales),SUM(EU_Sales),SUM(JP_Sales),SUM(Other_Sales) FROM vgsales WHERE `Name`=?", game).Scan(
+		&g.GlobalSales,
+		&g.NASales,
+		&g.EUSales,
+		&g.JPSales,
+		&g.OtherSales)
+	if err != nil {
+		logger.JaegerErrorLog(dbSpan, err)
+		zap.L().Error("select game sales err", zap.String("traceID", traceID), zap.Error(err))
+		return dataModel.GameSales{}, err
+	}
+	return g, err
 }
 func (mysqlDS *mysqlDataSource) GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error) {
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on platform")
