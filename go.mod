@@ -3,6 +3,8 @@ module cloudProject
 go 1.17
 
 require (
+	github.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.9.0
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
@@ -12,9 +14,7 @@ require (
 	github.com/prometheus/client_golang v1.11.0
 	github.com/uber/jaeger-client-go v2.29.1+incompatible
 	github.com/uber/jaeger-lib v2.4.1+incompatible
+	github.com/valyala/fasthttp v1.31.0
+	github.com/wcharczuk/go-chart/v2 v2.1.0
 	go.uber.org/zap v1.19.1
-	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-    github.com/valyala/fasthttp v1.31.0
-    github.com/wcharczuk/go-chart/v2 v2.1.0
 )
-
