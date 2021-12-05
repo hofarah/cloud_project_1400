@@ -15,7 +15,7 @@ func init() {
 	}
 }
 
-func Auth(ctx *fiber.Ctx) func(ctx *fiber.Ctx) error {
+func Auth() func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		statusCode, err := utils.HttpRequest("GET", authServiceUrl, nil, nil, map[string]string{
 			"token":      ctx.Get("token"),
