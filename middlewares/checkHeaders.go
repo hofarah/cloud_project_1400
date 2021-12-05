@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func CheckRequiredHeaders(ctx *fiber.Ctx) func(ctx *fiber.Ctx) error {
+func CheckRequiredHeaders() func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
 		apiKey := ctx.Get("secret")
 		if apiKey == "" || len(apiKey) != 32 {
