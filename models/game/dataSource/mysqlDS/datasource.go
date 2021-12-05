@@ -25,6 +25,7 @@ type MysqlDS interface {
 	GetBestOnYearAndPlatform(spanCtx context.Context, platform string, year, N int) (games []dataModel.GameSales, err error)
 	GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, err error)
 	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, err error)
+	GetOnGenres(spanCtx context.Context, from, to int) (games []dataModel.GameSales, err error)
 }
 
 func init() {
@@ -272,6 +273,34 @@ func (mysqlDS *mysqlDataSource) GetBestOnGenre(spanCtx context.Context, genre st
 			&game.JPSales,
 			&game.OtherSales,
 			&game.GlobalSales,
+		)
+		if err != nil {
+			logger.JaegerErrorLog(dbSpan, err)
+			zap.L().Error("scan err", zap.String("traceID", traceID), zap.Error(err))
+			return nil, err
+		}
+		games = append(games, game)
+	}
+	return games, nil
+}
+func (mysqlDS *mysqlDataSource) GetOnGenres(spanCtx context.Context, from, to int) (games []dataModel.GameSales, err error) {
+	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on genre")
+	defer logger.FinishSpan(dbSpan)
+
+	rows, err := mysqlDS.conn.Query("SELECT SUM(Global_Sales),Genre FROM vgsales WHERE `Year` >= ? AND `Year` <= ? Group BY Genre", from, to)
+	if err != nil {
+		logger.JaegerErrorLog(dbSpan, err)
+		zap.L().Error("select games by genre err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, err
+	}
+	defer rows.Close()
+
+	games = make([]dataModel.GameSales, 0)
+	for rows.Next() {
+		game := dataModel.GameSales{}
+		err = rows.Scan(
+			&game.GlobalSales,
+			&game.Genre,
 		)
 		if err != nil {
 			logger.JaegerErrorLog(dbSpan, err)
