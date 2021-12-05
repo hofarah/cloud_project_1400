@@ -6,7 +6,7 @@ import (
 	"strconv"
 )
 
-func ProducerSells(from, to string, data map[string][]chart.Value) ([]byte, error) {
+func ProducerSells(data map[string][]chart.Value) ([]byte, error) {
 
 	graph := chart.Chart{
 		Background: chart.Style{
@@ -25,8 +25,8 @@ func ProducerSells(from, to string, data map[string][]chart.Value) ([]byte, erro
 		}
 		for _, v := range value {
 			p, _ := strconv.ParseFloat(v.Label, 10)
-			ch.XValues = append(ch.XValues, v.Value)
-			ch.YValues = append(ch.YValues, p)
+			ch.YValues = append(ch.YValues, v.Value)
+			ch.XValues = append(ch.XValues, p)
 		}
 		graph.Series = append(graph.Series, ch)
 	}
