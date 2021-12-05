@@ -4,16 +4,17 @@ import (
 	"bytes"
 	"github.com/wcharczuk/go-chart/v2"
 	"github.com/wcharczuk/go-chart/v2/drawing"
+	"strconv"
 )
 
-func GenreSells(from, to string, data []chart.Value) ([]byte, error) {
+func GenreSells(from, to int, data []chart.Value) ([]byte, error) {
 	graph := chart.BarChart{
-		Title: from + " to " + to,
+		Title: strconv.Itoa(from) + " to " + strconv.Itoa(to),
 		Background: chart.Style{
 			Padding: chart.Box{
 				Top:    50,
-				Right:  20,
-				Left:   20,
+				Right:  10,
+				Left:   10,
 				Bottom: 30,
 			},
 			StrokeWidth: 5,
