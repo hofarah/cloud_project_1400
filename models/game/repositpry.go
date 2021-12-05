@@ -4,6 +4,7 @@ import (
 	"cloudProject/models/game/dataModel"
 	"cloudProject/models/game/dataSource/cacheDS"
 	"cloudProject/models/game/dataSource/mysqlDS"
+	"cloudProject/pkg/cast"
 	"cloudProject/pkg/logger"
 	"cloudProject/pkg/redis"
 	"context"
@@ -29,8 +30,9 @@ type Repository interface {
 	GetBestOnPlatform(spanCtx context.Context, platform string, N int) ([]dataModel.GameSales, string, error)
 	GetBestOnYear(spanCtx context.Context, year, N int) (games []dataModel.GameSales, errStr string, err error)
 	GetBestOnYearAndPlatform(spanCtx context.Context, platform string, year, N int) (games []dataModel.GameSales, errStr string, err error)
-	GetGenreBetweenYears(spanCtx context.Context, from, to int) (genres []chart.Value, errStr string, err error)
+	GetGenreBetweenYears(spanCtx context.Context, from, to int) (data []chart.Value, errStr string, err error)
 	GetBestOnGenre(spanCtx context.Context, genre string, N int) (games []dataModel.GameSales, errStr string, err error)
+	GetProducerOnYears(spanCtx context.Context, p1, p2 string, from, to int) (data map[string][]chart.Value, errStr string, err error)
 	GetEuropeMoreThanNorthAmerica(spanCtx context.Context) (games []dataModel.GameSales, errStr string, err error)
 }
 
@@ -127,4 +129,37 @@ func (repo *gameRepository) GetEuropeMoreThanNorthAmerica(spanCtx context.Contex
 		zap.L().Error("get by genre err", zap.String("traceID", traceID), zap.Error(err))
 	}
 	return games, "01", err
+}
+
+func (repo *gameRepository) GetProducerOnYears(spanCtx context.Context, p1, p2 string, from, to int) (map[string][]chart.Value, string, error) {
+	traceID := logger.GetTraceIDFromContext(spanCtx)
+	var data1, data2 []chart.Value
+	p1data, err := repo.mysqlDS.GetProducerOnYears(spanCtx, p1, from, to)
+	if err != nil {
+		zap.L().Error("get producer in years err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, "01", err
+	}
+	sort.SliceStable(p1data, func(i, j int) bool {
+		return p1data[i].Year < p1data[j].Year
+	})
+	p2data, err := repo.mysqlDS.GetProducerOnYears(spanCtx, p2, from, to)
+	if err != nil {
+		zap.L().Error("get producer in years err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, "02", err
+	}
+	sort.SliceStable(p2data, func(i, j int) bool {
+		return p2data[i].Year < p2data[j].Year
+	})
+	for _, d := range p1data {
+		year, _ := cast.ToString(d.Year)
+		data1 = append(data1, chart.Value{Label: year, Value: d.GlobalSales})
+	}
+	for _, d := range p2data {
+		year, _ := cast.ToString(d.Year)
+		data2 = append(data2, chart.Value{Label: year, Value: d.GlobalSales})
+	}
+	var data = make(map[string][]chart.Value)
+	data[p1] = data1
+	data[p2] = data2
+	return data, "01", err
 }
