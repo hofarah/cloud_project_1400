@@ -20,6 +20,7 @@ var mysqlDS MysqlDS
 type MysqlDS interface {
 	GetByName(spanCtx context.Context, name string) (games []dataModel.GameSales, err error)
 	GetByRank(spanCtx context.Context, rank int) (game dataModel.GameSales, err error)
+	GetProducerOnYears(spanCtx context.Context, publisher string, from, to int) (data []dataModel.GameSales, err error)
 	GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error)
 	GetBestOnYear(spanCtx context.Context, year, N int) (games []dataModel.GameSales, err error)
 	GetBestOnYearAndPlatform(spanCtx context.Context, platform string, year, N int) (games []dataModel.GameSales, err error)
@@ -97,6 +98,28 @@ func (mysqlDS *mysqlDataSource) GetByRank(spanCtx context.Context, rank int) (ga
 		zap.L().Error("select games by rank err", zap.String("traceID", traceID), zap.Error(err))
 	}
 	return game, err
+}
+func (mysqlDS *mysqlDataSource) GetProducerOnYears(spanCtx context.Context, publisher string, from, to int) (games []dataModel.GameSales, err error) {
+	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game by rank query")
+	defer logger.FinishSpan(dbSpan)
+
+	rows, err := mysqlDS.conn.Query("SELECT SUM(Global_Sales),`Year` FROM vgsales WHERE Publisher=? AND `Year` >= ? AND `Year` <= ? Group BY `Year`", publisher, from, to)
+	if err != nil {
+		logger.JaegerErrorLog(dbSpan, err)
+		zap.L().Error("select games by producers year err", zap.String("traceID", traceID), zap.Error(err))
+		return nil, err
+	}
+	defer rows.Close()
+
+	games = make([]dataModel.GameSales, 0)
+	for rows.Next() {
+		game := dataModel.GameSales{}
+		err = rows.Scan(
+			&game.GlobalSales,
+			&game.Year)
+		games = append(games, game)
+	}
+	return games, err
 }
 func (mysqlDS *mysqlDataSource) GetBestOnPlatform(spanCtx context.Context, platform string, N int) (games []dataModel.GameSales, err error) {
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on platform")
