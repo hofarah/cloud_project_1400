@@ -17,7 +17,8 @@ func SumSellAnnually(data []chart.Value) ([]byte, error) {
 			StrokeWidth: 5,
 			StrokeColor: drawing.ColorBlack,
 		},
-		Height:   512,
+		Height:   1024,
+		Width:    2048,
 		BarWidth: 30,
 	}
 	var series []chart.Series //help for graph
