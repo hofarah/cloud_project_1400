@@ -1,0 +1,64 @@
+version : "3.1"
+
+
+
+services:
+   authentication:
+     image: cloud_authentication:latest
+     restart: unless-stopped
+     environment:
+         foo: bar
+     ports: 
+       - 1122:7575
+     volumes: 
+       - /core/log/cloud/auth:/logs
+
+
+
+   dataAnalytic:
+     image: cloud_dataanalytic:latest
+     restart: unless-stopped
+     environment:
+         foo: bar
+     ports:
+       - 1123:7575
+     volumes:
+       - /core/log/cloud/dataAnalytic:/logs
+
+
+
+   global:
+     image: cloud_global:latest
+     restart: unless-stopped
+     environment:
+         foo: bar
+     ports:
+       - 1124:7575
+     volumes:
+       - /core/log/cloud/global:/logs
+
+
+
+   cloud_1400_data :
+     image: mysql
+     restart: unless-stopped
+     environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_DATABASE: cloud_1400
+     ports:
+       - 3307:3306      
+     volumes:
+       - /core/db/data:/var/lib/mysql
+
+
+
+   cloud_1400_auth :
+     image: mysql
+     restart: unless-stopped
+     environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_DATABASE: cloud_1400_auth
+     ports:
+       - 3308:3306
+     volumes:
+             - /core/db/auth:/var/lib/mysql
