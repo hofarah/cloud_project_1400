@@ -63,7 +63,10 @@ func Response(ctx *fiber.Ctx, data interface{}) error {
 		res.Data = data
 	}
 	ctx.Status(200)
-	getAPIStats(ctx.OriginalURL()).AddSuccess()
+	stats := getAPIStats(ctx.OriginalURL())
+	if stats != nil {
+		stats.AddSuccess()
+	}
 	return prepareBody(ctx, res)
 }
 func Error(ctx *fiber.Ctx, section, errStr string, code int, msg ...string) error {
@@ -95,7 +98,10 @@ func Error(ctx *fiber.Ctx, section, errStr string, code int, msg ...string) erro
 		}
 	}
 	ctx.Status(code)
-	getAPIStats(ctx.OriginalURL()).AddError()
+	stats := getAPIStats(ctx.OriginalURL())
+	if stats != nil {
+		stats.AddError()
+	}
 	return prepareBody(ctx, res)
 }
 func SetAPIBaseErrCode(ctx *fiber.Ctx, baseErrCode string) {
@@ -173,7 +179,7 @@ func StartPrometheus(routes map[string]string) {
 		goPrometheus.MustRegister(collector)
 		http.Handle("/metrics", promhttp.Handler())
 		zap.L().Info("metrics to serve on port :8080")
-		err := http.ListenAndServe(":8080", nil)
+		err := http.ListenAndServe(":8082", nil)
 		if err != nil {
 			panic(err)
 		}
