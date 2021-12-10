@@ -1,0 +1,27 @@
+global:
+  scrape_interval: 30s
+  scrape_timeout: 10s
+
+rule_files:
+  - alert.yml
+
+scrape_configs:
+  - job_name: global_service
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+              - '${IP}:8083'
+
+  - job_name: auth_service
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+              - '${IP}:8081'
+
+
+  - job_name: dataAnalytic_service
+    metrics_path: /metrics
+    static_configs:
+      - targets:
+              - '${IP}:8082'
+
