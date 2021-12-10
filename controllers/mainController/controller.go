@@ -170,7 +170,7 @@ func StartPrometheus(routes map[string]string) {
 		metrics[i] = prometheus.Metric{Name: name}
 		stats := &prometheus.Stats{}
 		statistics[i] = stats
-		serviceStats[url] = stats
+		serviceStats[strings.ToLower(url)] = stats
 		i++
 	}
 	collector := prometheus.NewCollector()
@@ -186,6 +186,7 @@ func StartPrometheus(routes map[string]string) {
 	}()
 }
 func getAPIStats(url string) *prometheus.Stats {
+	url = strings.ToLower(url)
 	if strings.Contains(url, "?") {
 		url = url[:strings.Index(url, "?")]
 	}
