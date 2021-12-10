@@ -1,0 +1,21 @@
+groups:
+  - name: authAlert
+    rules:
+      - alert: InstanceDown 
+        expr: up{job="auth_service"} < 1 
+        for: 5m
+
+  - name: globalAlert
+    rules:
+      - alert: InstanceDown
+        expr: up{job="global_service"} < 1
+        for: 5m 
+
+    
+    
+  - name: dataAnalyticAlert
+    rules:
+      - alert: InstanceDown
+        expr: up{job="dataAnalytic_service"} < 1
+        for: 5m 
+
