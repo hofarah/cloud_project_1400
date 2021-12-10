@@ -25,7 +25,7 @@ func GenreSells(ctx *fiber.Ctx) error {
 	bytes, err := draw.GenreSells(startYear, endYear, data)
 	if err != nil {
 		zap.L().Error("genreSells_draw_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "02", err.Error(), 500)
+		return mainController.Error(ctx, "02", "01", 500, err.Error())
 	}
 	ctx.Response().Header.SetContentType("image/png")
 	return ctx.Send(bytes)

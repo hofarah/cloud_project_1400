@@ -173,7 +173,7 @@ func StartPrometheus(routes map[string]string) {
 		goPrometheus.MustRegister(collector)
 		http.Handle("/metrics", promhttp.Handler())
 		zap.L().Info("metrics to serve on port :8080")
-		err := http.ListenAndServe(":8081", nil)
+		err := http.ListenAndServe(":8080", nil)
 		if err != nil {
 			panic(err)
 		}

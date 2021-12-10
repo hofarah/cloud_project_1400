@@ -7,10 +7,10 @@ import (
 )
 
 var routes = map[string]string{
+	"genreSells":        "/chart/genreSells",
+	"producerSells":     "/chart/producerSells",
 	"sellsCompare2Game": "/chart/sellCompare2Game",
 	"sumSellAnnually":   "/chart/sumSellAnnually",
-	"producerSells":     "/chart/producerSells",
-	"genreSells":        "/chart/genreSells",
 }
 
 func setupRoute(app *fiber.App) {

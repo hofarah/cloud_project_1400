@@ -21,7 +21,7 @@ func ProducerSells(ctx *fiber.Ctx) error {
 	producer2 := ctx.Query("p2")
 	if producer1 == "" || producer2 == "" {
 		zap.L().Error("ProducerSells_params_invalid_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", "producer not found", 404)
+		return mainController.Error(ctx, "01", "01", 404, "producerNotFound")
 	}
 	data, errStr, err := game.Repo.GetProducerOnYears(spanCtx, producer1, producer2, startYear, endYear)
 	if err != nil {
@@ -31,7 +31,7 @@ func ProducerSells(ctx *fiber.Ctx) error {
 	bytes, err := draw.ProducerSells(data)
 	if err != nil {
 		zap.L().Error("genreSells_draw_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", err.Error(), 500)
+		return mainController.Error(ctx, "03", "01", 500, err.Error())
 	}
 	ctx.Response().Header.SetContentType("image/png")
 	return ctx.Send(bytes)
