@@ -45,7 +45,7 @@ func (repo *userRepository) SignUPUser(ctx context.Context, username string) (da
 	if exist {
 		return dataModel.User{}, "02", "", errors.New("repetitiousUserName")
 	}
-	token, err := jwt.CreateToken(traceID)
+	token, err := jwt.CreateToken(username)
 	if err != nil {
 		zap.L().Error("creatToken err", zap.String("traceID", traceID), zap.Error(err))
 		return dataModel.User{}, "03", "", err
