@@ -63,8 +63,8 @@ func InitJaeger(service string) opentracing.Tracer {
 	zap.L().Info("sending trace to", zap.String("agentIP", agentIP), zap.String("agentPort", agentPort))
 	cfg := &config.Configuration{
 		Sampler: &config.SamplerConfig{
-			Type:  "probabilistic",
-			Param: 0.05,
+			Type:  "const",
+			Param: 1,
 		},
 		Reporter: &config.ReporterConfig{
 			LogSpans:           false,

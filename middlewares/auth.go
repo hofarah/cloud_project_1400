@@ -20,7 +20,7 @@ func Auth() func(ctx *fiber.Ctx) error {
 		statusCode, err := utils.HttpRequest("GET", authServiceUrl, nil, nil, map[string]string{
 			"token":      ctx.Get("token"),
 			"secret":     ctx.Get("secret"),
-			"serviceKey": os.Getenv("serviceKey"),
+			"serviceKey": os.Getenv("SERVICE_KEY"),
 		})
 		if statusCode != 200 {
 			zap.L().Error("http request err", zap.Error(err))

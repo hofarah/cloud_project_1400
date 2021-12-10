@@ -20,7 +20,7 @@ func CheckRequiredHeaders() func(ctx *fiber.Ctx) error {
 		if ctx.Get("serviceKey") == "" && ctx.OriginalURL() != "/authentication/signup" {
 			zap.L().Error("serviceKey not found", zap.Any("url", ctx.OriginalURL()))
 			return ctx.SendStatus(403)
-		} else if ctx.Get("serviceKey") != os.Getenv("serviceKey") {
+		} else if ctx.Get("serviceKey") != os.Getenv("SERVICE_KEY") {
 			zap.L().Error("serviceKey is invalid", zap.Any("key", ctx.Get("serviceKey")))
 			return ctx.SendStatus(403)
 		}
