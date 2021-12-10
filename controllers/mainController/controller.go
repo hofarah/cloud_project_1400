@@ -63,7 +63,7 @@ func Response(ctx *fiber.Ctx, data interface{}) error {
 		res.Data = data
 	}
 	ctx.Status(200)
-	stats := getAPIStats(ctx.OriginalURL())
+	stats := GetAPIStats(ctx.OriginalURL())
 	if stats != nil {
 		stats.AddSuccess()
 	}
@@ -98,7 +98,7 @@ func Error(ctx *fiber.Ctx, section, errStr string, code int, msg ...string) erro
 		}
 	}
 	ctx.Status(code)
-	stats := getAPIStats(ctx.OriginalURL())
+	stats := GetAPIStats(ctx.OriginalURL())
 	if stats != nil {
 		stats.AddError()
 	}
@@ -185,7 +185,7 @@ func StartPrometheus(routes map[string]string) {
 		}
 	}()
 }
-func getAPIStats(url string) *prometheus.Stats {
+func GetAPIStats(url string) *prometheus.Stats {
 	url = strings.ToLower(url)
 	if strings.Contains(url, "?") {
 		url = url[:strings.Index(url, "?")]

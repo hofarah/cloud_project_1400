@@ -30,5 +30,6 @@ func SellsCompare2Game(ctx *fiber.Ctx) error {
 		return mainController.Error(ctx, "03", "01", 500, err.Error())
 	}
 	ctx.Response().Header.SetContentType("image/png")
+	mainController.GetAPIStats(ctx.OriginalURL()).AddSuccess()
 	return ctx.Send(bytes)
 }
