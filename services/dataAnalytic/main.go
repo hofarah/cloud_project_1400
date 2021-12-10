@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	app := createService.New("authentication")
+	app := createService.New("dataAnalytic")
 	mainController.StartPrometheus(routes)
 	setupRoute(app)
 	panic(app.Listen(":7575"))
