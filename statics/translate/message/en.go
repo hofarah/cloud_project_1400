@@ -10,4 +10,6 @@ var englishMessage = map[string]string{
 	"gameNotFound":        "game not found with this rank",
 	"platformNotFound":    "platform not found",
 	"N_NotFound":          "n not found",
+	"yearNotFound":        "year not found",
+	"GenreNotFound":       "genre not found",
 }

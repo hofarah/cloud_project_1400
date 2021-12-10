@@ -14,11 +14,11 @@ func GetBestOnYear(ctx *fiber.Ctx) error {
 
 	year, _ := cast.ToInt(ctx.Query("year"))
 	if year == 0 {
-		return mainController.Error(ctx, "01", "01", 404)
+		return mainController.Error(ctx, "01", "01", 404, "yearNotFound")
 	}
 	NBest, _ := cast.ToInt(ctx.Query("N"))
 	if NBest == 0 {
-		return mainController.Error(ctx, "02", "01", 404)
+		return mainController.Error(ctx, "02", "01", 404, "N_NotFound")
 	}
 	games, errStr, err := gameRepo.Repo.GetBestOnYear(spanCtx, year, NBest)
 	if err != nil {

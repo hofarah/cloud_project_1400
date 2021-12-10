@@ -14,11 +14,11 @@ func GetBestOnGenre(ctx *fiber.Ctx) error {
 
 	genre := ctx.Query("genre")
 	if genre == "" {
-		return mainController.Error(ctx, "01", "01", 404)
+		return mainController.Error(ctx, "01", "01", 404, "GenreNotFound")
 	}
 	NBest, _ := cast.ToInt(ctx.Query("N"))
 	if NBest == 0 {
-		return mainController.Error(ctx, "02", "01", 404)
+		return mainController.Error(ctx, "02", "01", 404, "N_NotFound")
 	}
 	games, errStr, err := gameRepo.Repo.GetBestOnGenre(spanCtx, genre, NBest)
 	if err != nil {

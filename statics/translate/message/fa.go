@@ -10,4 +10,6 @@ var persianMessage = map[string]string{
 	"gameNotFound":        "بازی با این رنک پیدا نشد",
 	"platformNotFound":    "نوع پلتفرم را وارد کنید",
 	"N_NotFound":          "لطفا تعداد را وارد کنید",
+	"yearNotFound":        "لطفا سال را وارد کنید",
+	"GenreNotFound":       "لطفا ژانر را وارد کنید ",
 }
