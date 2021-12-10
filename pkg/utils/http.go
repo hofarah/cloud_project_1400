@@ -34,10 +34,13 @@ func HttpRequest(method, url string, request, response interface{}, headers map[
 	if err != nil {
 		return 400, err
 	}
-	err = jsoniter.Unmarshal(resBytes, response)
-	if err != nil {
-		return 400, err
+	if response != nil {
+		err = jsoniter.Unmarshal(resBytes, response)
+		if err != nil {
+			return 400, err
+		}
 	}
+
 	return res.StatusCode, nil
 }
 

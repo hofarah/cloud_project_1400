@@ -21,10 +21,12 @@ func Verify(token string) (*Payload, error) {
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
 	if err != nil {
 		validationErr, ok := err.(*jwt.ValidationError)
-		if ok && errors.Is(validationErr.Inner, ErrExpiredToken) {
+		if ok && !errors.Is(validationErr.Inner, ErrExpiredToken) {
 			return nil, ErrExpiredToken
 		}
-		return nil, ErrInvalidToken
+		if !errors.Is(validationErr.Inner, ErrExpiredToken) {
+			return nil, ErrInvalidToken
+		}
 	}
 
 	payload, ok := jwtToken.Claims.(*Payload)

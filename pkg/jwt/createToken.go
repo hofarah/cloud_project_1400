@@ -26,7 +26,7 @@ func CreateToken(username string) (string, error) {
 	var err error
 	payload := Payload{
 		Username: username,
-		Exp:      time.Now().Add(time.Hour * 12).Unix(),
+		Exp:      time.Now().Add(time.Hour * 48).Unix(),
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, &payload)
