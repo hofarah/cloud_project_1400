@@ -14,7 +14,7 @@ var connection *redisClient.Client
 func setClient() {
 	url := os.Getenv("REDIS_URL")
 	if url == "" {
-		panic("REDIS_URL not found")
+		//panic("REDIS_URL not found")
 	}
 	zap.L().Info("REDIS_URL at env " + url)
 
@@ -40,7 +40,7 @@ func setClient() {
 	_, err := connection.Ping(ctx).Result()
 	if err != nil {
 		zap.L().Error("redis ping err", zap.Error(err))
-		panic(err)
+		//panic(err)
 	}
 }
 

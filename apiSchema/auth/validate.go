@@ -10,7 +10,7 @@ func (req *SignUpRequest) Validate(ctx *fiber.Ctx) (string, int, error) {
 	errStrName, err := validate.Struct(req)
 	if err != nil {
 		switch errStrName {
-		case "UserName,Required":
+		case "UserName,required":
 			return "03", 400, errors.New("userNameRequired")
 		}
 	}

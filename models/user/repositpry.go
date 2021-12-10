@@ -59,7 +59,7 @@ func (repo *userRepository) SignUPUser(ctx context.Context, username string) (da
 	if err != nil {
 		zap.L().Error("insert User err", zap.String("traceID", traceID), zap.Error(err))
 	}
-	return user, "04", token, err
+	return user, token, "04", err
 }
 func (repo *userRepository) GetUserByUserName(ctx context.Context, username string) (user dataModel.User, exist bool, errStr string, err error) {
 	traceID := logger.GetTraceIDFromContext(ctx)
