@@ -82,7 +82,7 @@ func (mysqlDS *mysqlDataSource) GetByRank(spanCtx context.Context, rank int) (ga
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game by rank query")
 	defer logger.FinishSpan(dbSpan)
 
-	err = mysqlDS.conn.QueryRow("SELECT * FROM vgsales WHERE Rank=?", rank).Scan(
+	err = mysqlDS.conn.QueryRow("select * from vgsales where `Rank`= ?", int64(rank)).Scan(
 		&game.Rank,
 		&game.Name,
 		&game.Platform,

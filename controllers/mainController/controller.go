@@ -16,6 +16,7 @@ import (
 	"go.uber.org/zap"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 var serviceStats map[string]*prometheus.Stats
@@ -179,6 +180,9 @@ func StartPrometheus(routes map[string]string) {
 	}()
 }
 func getAPIStats(url string) *prometheus.Stats {
+	if strings.Contains(url, "?") {
+		url = url[:strings.Index(url, "?")]
+	}
 	if _, found := serviceStats[url]; found {
 		return serviceStats[url]
 	}
