@@ -7,13 +7,7 @@ import (
 	"os"
 )
 
-var authServiceUrl string
-
-func init() {
-	if authServiceUrl = os.Getenv("AUTH_SERVICE_URL"); authServiceUrl == "" {
-		panic("AUTH_SERVICE_URL not found")
-	}
-}
+var authServiceUrl = os.Getenv("AUTH_SERVICE_URL")
 
 func Auth() func(ctx *fiber.Ctx) error {
 	return func(ctx *fiber.Ctx) error {
@@ -22,7 +16,7 @@ func Auth() func(ctx *fiber.Ctx) error {
 			"secret":     ctx.Get("secret"),
 			"serviceKey": os.Getenv("SERVICE_KEY"),
 		})
-		if statusCode != 200 {
+		if statusCode != 200 || err != nil {
 			zap.L().Error("http request err", zap.Error(err))
 			return ctx.SendStatus(403)
 		}
