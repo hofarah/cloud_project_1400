@@ -1,5 +1,5 @@
 # cloud_project_1400
-## docker microservices
+## Docker microservices
 
 here we have three web service that can use in docker or Separately :
 - Auth
@@ -81,6 +81,11 @@ expose on port 7575 and set command that run when container start
 
 ## 1. docker run method
 Follow the instructions below :
+```
+$ docker run [OPTIONS] IMAGE[:TAG|@DIGEST] 
+```
+you can use ```-d``` option to run in background
+
 
 ## 2. docker-compose method
 in this method we can run multiple container with one command. we can use ```docker-compose up -d```. this command will automaticly run and manage the container we mentioned in a docker-compose.yml 
@@ -88,3 +93,16 @@ in this method we can run multiple container with one command. we can use ```doc
 it works simply and if you want to remove the containers you can use ```docker-compose down```. it will stop and remove containers. docker-compose is like rum method but you can use it many times.
 
 
+## Redis cli
+in this project we caching all data.
+so,there is no concern
+
+## Jaeger tracing
+![image](https://user-images.githubusercontent.com/53389261/145643530-63441a00-a124-49d9-93e7-7f176172b040.png)
+you can see your traces of services in ```http://${SERVER_IP}:16686```
+
+## Prometheus
+![image](https://user-images.githubusercontent.com/53389261/145643827-2d7bd06f-5faf-45cf-8c1c-e9085c13b4c0.png)
+you can create graph and queries for your services. just go on ```http://${SERVER_IP}:9000```
+
+**all configs are mutable ,you can edit configs and change ports.**
