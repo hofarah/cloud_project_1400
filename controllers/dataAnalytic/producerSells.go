@@ -12,7 +12,7 @@ import (
 )
 
 func ProducerSells(ctx *fiber.Ctx) error {
-	spanCtx, traceID := mainController.InitAPI(ctx, "50000", "genreSells")
+	spanCtx, traceID := mainController.InitAPI(ctx, "50000", "producerSells")
 	zap.L().Debug("ProducerSells_start", zap.String("traceID", traceID))
 	defer mainController.FinishAPISpan(ctx)
 	startYear, _ := cast.ToInt(ctx.Query("from", "1970"))

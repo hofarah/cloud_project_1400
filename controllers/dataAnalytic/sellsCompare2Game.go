@@ -9,7 +9,7 @@ import (
 )
 
 func SellsCompare2Game(ctx *fiber.Ctx) error {
-	spanCtx, traceID := mainController.InitAPI(ctx, "50000", "genreSells")
+	spanCtx, traceID := mainController.InitAPI(ctx, "50000", "sellsCompare")
 	zap.L().Debug("sellsCompare2Game_start", zap.String("traceID", traceID))
 	defer mainController.FinishAPISpan(ctx)
 
