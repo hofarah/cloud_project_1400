@@ -103,6 +103,14 @@ you can see your traces of services in ```http://${SERVER_IP}:16686```
 
 ## Prometheus
 ![image](https://user-images.githubusercontent.com/53389261/145643827-2d7bd06f-5faf-45cf-8c1c-e9085c13b4c0.png)
+
+* get load request
+* failed request
+* success request 
+* threads
+* memory allocations
+* gc calling and ...
+
 you can create graph and queries for your services. just go on ```http://${SERVER_IP}:9000```
 
 **all configs are mutable ,you can edit configs and change ports.**
