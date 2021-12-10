@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"cloudProject/controllers/mainController"
 	"cloudProject/pkg/utils"
 	"github.com/gofiber/fiber/v2"
 	"go.uber.org/zap"
@@ -18,7 +19,7 @@ func Auth() func(ctx *fiber.Ctx) error {
 		})
 		if statusCode != 200 || err != nil {
 			zap.L().Error("http request err", zap.Error(err))
-			return ctx.SendStatus(403)
+			return mainController.Error(ctx, "00", "01", 403)
 		}
 		return ctx.Next()
 	}

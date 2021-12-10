@@ -13,4 +13,5 @@ var englishMessage = map[string]string{
 	"yearNotFound":        "year not found",
 	"GenreNotFound":       "genre not found",
 	"producerNotFound":    "producer Not Found",
+	"EnterTwoGame":        "please enter g1 and g2",
 }

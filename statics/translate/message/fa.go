@@ -13,4 +13,5 @@ var persianMessage = map[string]string{
 	"yearNotFound":        "لطفا سال را وارد کنید",
 	"GenreNotFound":       "لطفا ژانر را وارد کنید ",
 	"producerNotFound":    "ارایه دهنده یافت نشد",
+	"EnterTwoGame":        "لطفا 2 بازی را وارد کنید ",
 }

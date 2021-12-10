@@ -17,7 +17,7 @@ func SellsCompare2Game(ctx *fiber.Ctx) error {
 	game2 := ctx.Query("g2")
 	if game1 == "" || game2 == "" {
 		zap.L().Error("sellsCompare2Game_params_invalid_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", "game not found", 404)
+		return mainController.Error(ctx, "01", "01", 404, "EnterTwoGame")
 	}
 	data, errStr, err := game.Repo.GetGamesSell(spanCtx, game1, game2)
 	if err != nil {
@@ -27,7 +27,7 @@ func SellsCompare2Game(ctx *fiber.Ctx) error {
 	bytes, err := draw.SellsCompare2Game(data)
 	if err != nil {
 		zap.L().Error("sellsCompare2Game_draw_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", err.Error(), 500)
+		return mainController.Error(ctx, "03", "01", 500, err.Error())
 	}
 	ctx.Response().Header.SetContentType("image/png")
 	return ctx.Send(bytes)

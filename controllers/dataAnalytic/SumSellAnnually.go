@@ -26,7 +26,7 @@ func SumSellAnnually(ctx *fiber.Ctx) error {
 	bytes, err := draw.SumSellAnnually(data)
 	if err != nil {
 		zap.L().Error("sumSellAnnually_draw_err", zap.String("traceID", traceID))
-		return mainController.Error(ctx, "01", err.Error(), 500)
+		return mainController.Error(ctx, "02", "01", 500, err.Error())
 	}
 	ctx.Response().Header.SetContentType("image/png")
 	return ctx.Send(bytes)
