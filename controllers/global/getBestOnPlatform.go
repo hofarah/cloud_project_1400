@@ -14,11 +14,11 @@ func GetBestOnPlatform(ctx *fiber.Ctx) error {
 
 	platform := ctx.Query("platform")
 	if platform == "" {
-		return mainController.Error(ctx, "01", "01", 404)
+		return mainController.Error(ctx, "01", "01", 404, "platformNotFound")
 	}
 	NBest, _ := cast.ToInt(ctx.Query("N"))
 	if NBest == 0 {
-		return mainController.Error(ctx, "02", "01", 404)
+		return mainController.Error(ctx, "02", "01", 404, "N_NotFound")
 	}
 	games, errStr, err := gameRepo.Repo.GetBestOnPlatform(spanCtx, platform, NBest)
 	if err != nil {

@@ -8,4 +8,6 @@ var englishMessage = map[string]string{
 	"userNameRequired":    "entrance username is required",
 	"repetitiousUserName": "Username is repetitious",
 	"gameNotFound":        "game not found with this rank",
+	"platformNotFound":    "platform not found",
+	"N_NotFound":          "n not found",
 }

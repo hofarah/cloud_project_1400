@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
+	"strings"
 )
 
 type mysqlDataSource struct {
@@ -46,7 +47,7 @@ func (mysqlDS *mysqlDataSource) GetByName(spanCtx context.Context, name string) 
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game by name query")
 	defer logger.FinishSpan(dbSpan)
 
-	rows, err := mysqlDS.conn.Query("SELECT Rank,`Name`,Platform,`Year`,Genre,Publisher,NA_Sales,EU_Sales,JP_Sales,Other_Sales,Global_Sales FROM vgsales WHERE Name LIKE '%" + name + "%'")
+	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE Name LIKE '%" + name + "%'")
 	if err != nil {
 		zap.L().Error("select games by name err", zap.String("traceID", traceID), zap.Error(err))
 		return nil, err
@@ -146,7 +147,7 @@ func (mysqlDS *mysqlDataSource) GetBestOnPlatform(spanCtx context.Context, platf
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on platform")
 	defer logger.FinishSpan(dbSpan)
 
-	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE Platform=? ORDER BY Rank ASC LIMIT ?", platform, N)
+	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE lower(Platform)=? ORDER BY `Rank` LIMIT ?", strings.ToLower(platform), N)
 	if err != nil {
 		logger.JaegerErrorLog(dbSpan, err)
 		zap.L().Error("select games by platform err", zap.String("traceID", traceID), zap.Error(err))

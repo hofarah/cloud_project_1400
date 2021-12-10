@@ -8,4 +8,6 @@ var persianMessage = map[string]string{
 	"userNameRequired":    "لطفا نام کاربری را وارد کنید",
 	"repetitiousUserName": "نام کاربری تکراری است",
 	"gameNotFound":        "بازی با این رنک پیدا نشد",
+	"platformNotFound":    "نوع پلتفرم را وارد کنید",
+	"N_NotFound":          "لطفا تعداد را وارد کنید",
 }
