@@ -35,10 +35,10 @@ services:
        LOGLEVEL: debug
        JAEGER_AGENT_HOST: ${SERVER_IP}
        JAEGER_AGENT_PORT: 6831
-       MYSQL: ${SERVER_IP}:3308
+       MYSQL: ${SERVER_IP}:3307
        MYSQL_USER: root
        MYSQL_PASSWORD: 123456
-       MYSQL_DB: cloud_1400_auth
+       MYSQL_DB: cloud_1400
        REDIS_URL: ${SERVER_IP}:6379
 
      ports:
@@ -59,10 +59,10 @@ services:
        LOGLEVEL: debug
        JAEGER_AGENT_HOST: ${SERVER_IP}
        JAEGER_AGENT_PORT: 6831
-       MYSQL: ${SERVER_IP}:3308
+       MYSQL: ${SERVER_IP}:3307
        MYSQL_USER: root
        MYSQL_PASSWORD: 123456
-       MYSQL_DB: cloud_1400_auth
+       MYSQL_DB: cloud_1400
        REDIS_URL: ${SERVER_IP}:6379
 
      ports:
