@@ -14,11 +14,11 @@ func GetBest5SellsByYearAndPlatform(ctx *fiber.Ctx) error {
 
 	year, _ := cast.ToInt(ctx.Query("year"))
 	if year == 0 {
-		return mainController.Error(ctx, "01", "01", 404)
+		return mainController.Error(ctx, "01", "01", 404, "yearNotFound")
 	}
 	platform := ctx.Query("platform")
 	if platform == "" {
-		return mainController.Error(ctx, "02", "01", 404)
+		return mainController.Error(ctx, "02", "01", 404, "platformNotFound")
 	}
 	games, errStr, err := gameRepo.Repo.GetBestOnYearAndPlatform(spanCtx, platform, year, 5)
 	if err != nil {

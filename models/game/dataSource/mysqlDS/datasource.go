@@ -258,7 +258,7 @@ func (mysqlDS *mysqlDataSource) GetBestOnYearAndPlatform(spanCtx context.Context
 	dbSpan, traceID := logger.StartSpan(spanCtx, mysqlDS.tracer, "get game best on year")
 	defer logger.FinishSpan(dbSpan)
 
-	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE `platform`=? AND `Year`=?   ORDER BY Rank ASC LIMIT ?", platform, year, N)
+	rows, err := mysqlDS.conn.Query("SELECT * FROM vgsales WHERE `platform`=? AND `Year`=?   ORDER BY `Rank` ASC LIMIT ?", platform, year, N)
 	if err != nil {
 		logger.JaegerErrorLog(dbSpan, err)
 		zap.L().Error("select games by platform err", zap.String("traceID", traceID), zap.Error(err))
