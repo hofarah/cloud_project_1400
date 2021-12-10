@@ -28,7 +28,7 @@ services:
      image: cloud_dataanalytic:latest
      restart: unless-stopped
      environment:
-       AUTH_SERVICE_URL: http://51.195.53.115:1123
+       AUTH_SERVICE_URL: http://51.195.53.115:1122
        SERVICE_KEY: PArvizTooPaiiZZ99
        LOGLEVEL: debug
        JAEGER_AGENT_HOST: 51.195.53.115
@@ -49,7 +49,7 @@ services:
      image: cloud_global:latest
      restart: unless-stopped
      environment:
-       AUTH_SERVICE_URL: http://51.195.53.115:1123
+       AUTH_SERVICE_URL: http://51.195.53.115:1122
        SERVICE_KEY: PArvizTooPaiiZZ99
        LOGLEVEL: debug
        JAEGER_AGENT_HOST: 51.195.53.115
