@@ -131,7 +131,7 @@ services:
       replicas: 1
     volumes:
       - ../prometheus:/etc/prometheus
-      - prometheus-data:/prometheus
+      - ../prometheus-data:/prometheus
         #    command: --web.enable-lifecycle  --config.file=/etc/prometheus/prometheus.yml
 
     
@@ -144,5 +144,3 @@ services:
     deploy:
       mode: replicated
       replicas: 2
-volumes:
-  prometheus-data:
