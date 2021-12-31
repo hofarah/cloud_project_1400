@@ -3,100 +3,114 @@ version : "3.1"
 
 
 services:
-        #   authentication:
-        #     image: cloud_authentication:latest
-        #     restart: unless-stopped
-        #     environment:
-        #       JWT_KEY: MRHBHOFARAH
-        #       SERVICE_KEY: PArvizTooPaiiZZ99
-        #       LOGLEVEL: debug
-        #       JAEGER_AGENT_HOST: ${SERVER_IP}
-        #       JAEGER_AGENT_PORT: 6831
-        #       MYSQL: ${SERVER_IP}:3308
-        #       MYSQL_USER: root
-        #       MYSQL_PASSWORD: 123456
-        #       MYSQL_DB: cloud_1400_auth
-        #       REDIS_URL: ${SERVER_IP}:6379
-        #     ports: 
-        #       - 1122:7575
-        #       - 8081:8081
-        #     volumes: 
-        #       - /core/log/cloud/auth:/logs
-        #
-        #
-        #
-        #   dataAnalytic:
-        #     image: cloud_dataanalytic:latest
-        #     restart: unless-stopped
-        #     environment:
-        #       AUTH_SERVICE_URL: http://${SERVER_IP}:1122
-        #       JWT_KEY: MRHBHOFARAH
-        #       SERVICE_KEY: PArvizTooPaiiZZ99
-        #       LOGLEVEL: debug
-        #       JAEGER_AGENT_HOST: ${SERVER_IP}
-        #       JAEGER_AGENT_PORT: 6831
-        #       MYSQL: ${SERVER_IP}:3307
-        #       MYSQL_USER: root
-        #       MYSQL_PASSWORD: 123456
-        #       MYSQL_DB: cloud_1400
-        #       REDIS_URL: ${SERVER_IP}:6379
-        #
-        #     ports:
-        #       - 1123:7575
-        #       - 8082:8081
-        #     volumes:
-        #       - /core/log/cloud/dataAnalytic:/logs
-        #
-        #
-        #
-        #   global:
-        #     image: cloud_global:latest
-        #     restart: unless-stopped
-        #     environment:
-        #       AUTH_SERVICE_URL: http://${SERVER_IP}:1122
-        #       JWT_KEY: MRHBHOFARAH
-        #       SERVICE_KEY: PArvizTooPaiiZZ99
-        #       LOGLEVEL: debug
-        #       JAEGER_AGENT_HOST: ${SERVER_IP}
-        #       JAEGER_AGENT_PORT: 6831
-        #       MYSQL: ${SERVER_IP}:3307
-        #       MYSQL_USER: root
-        #       MYSQL_PASSWORD: 123456
-        #       MYSQL_DB: cloud_1400
-        #       REDIS_URL: ${SERVER_IP}:6379
-        #
-        #     ports:
-        #       - 1124:7575
-        #       - 8083:8081
-        #     volumes:
-        #       - /core/log/cloud/global:/logs
-        #
-        #
-        #
-        #   cloud_1400_data :
-        #     image: mysql
-        #     restart: unless-stopped
-        #     environment:
-        #       MYSQL_ROOT_PASSWORD: 123456
-        #       MYSQL_DATABASE: cloud_1400
-        #     ports:
-        #       - 3307:3306      
-        #     volumes:
-        #       - /core/db/data:/var/lib/mysql
-        #
-        #
-        #
-        #   cloud_1400_auth :
-        #     image: mysql
-        #     restart: unless-stopped
-        #     environment:
-        #       MYSQL_ROOT_PASSWORD: 123456
-        #       MYSQL_DATABASE: cloud_1400_auth
-        #     ports:
-        #       - 3308:3306
-        #     volumes:
-        #             - /core/db/auth:/var/lib/mysql
-        #
+   authentication:
+     image: cloud_authentication:latest
+     restart: unless-stopped
+     environment:
+       JWT_KEY: MRHBHOFARAH
+       SERVICE_KEY: PArvizTooPaiiZZ99
+       LOGLEVEL: debug
+       JAEGER_AGENT_HOST: ${SERVER_IP}
+       JAEGER_AGENT_PORT: 6831
+       MYSQL: ${SERVER_IP}:3308
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 123456
+       MYSQL_DB: cloud_1400_auth
+       REDIS_URL: ${SERVER_IP}:6379
+     ports: 
+       - 1122:7575
+       - 8081:8081
+     deploy:
+       replicas: 2
+     volumes: 
+       - /core/log/cloud/auth:/logs
+
+
+
+   dataAnalytic:
+     image: cloud_dataanalytic:latest
+     restart: unless-stopped
+     environment:
+       AUTH_SERVICE_URL: http://${SERVER_IP}:1122
+       JWT_KEY: MRHBHOFARAH
+       SERVICE_KEY: PArvizTooPaiiZZ99
+       LOGLEVEL: debug
+       JAEGER_AGENT_HOST: ${SERVER_IP}
+       JAEGER_AGENT_PORT: 6831
+       MYSQL: ${SERVER_IP}:3307
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 123456
+       MYSQL_DB: cloud_1400
+       REDIS_URL: ${SERVER_IP}:6379
+
+     ports:
+       - 1123:7575
+       - 8082:8081
+     deploy:
+       replicas: 2
+ 
+     volumes:
+       - /core/log/cloud/dataAnalytic:/logs
+
+
+
+   global:
+     image: cloud_global:latest
+     restart: unless-stopped
+     environment:
+       AUTH_SERVICE_URL: http://${SERVER_IP}:1122
+       JWT_KEY: MRHBHOFARAH
+       SERVICE_KEY: PArvizTooPaiiZZ99
+       LOGLEVEL: debug
+       JAEGER_AGENT_HOST: ${SERVER_IP}
+       JAEGER_AGENT_PORT: 6831
+       MYSQL: ${SERVER_IP}:3307
+       MYSQL_USER: root
+       MYSQL_PASSWORD: 123456
+       MYSQL_DB: cloud_1400
+       REDIS_URL: ${SERVER_IP}:6379
+
+     ports:
+       - 1124:7575
+       - 8083:8081
+     deploy:
+       replicas: 2
+ 
+     volumes:
+       - /core/log/cloud/global:/logs
+
+
+
+   cloud_1400_data :
+     image: mysql
+     restart: unless-stopped
+     environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_DATABASE: cloud_1400
+     ports:
+       - 3307:3306      
+     deploy:
+       replicas: 1
+ 
+     volumes:
+       - /core/db/data:/var/lib/mysql
+
+
+
+   cloud_1400_auth :
+     image: mysql
+     restart: unless-stopped
+     environment:
+       MYSQL_ROOT_PASSWORD: 123456
+       MYSQL_DATABASE: cloud_1400_auth
+     ports:
+       - 3308:3306
+     deploy:
+       replicas: 1
+ 
+     volumes:
+             - /core/db/auth:/var/lib/mysql
+
 
 
    redis:
@@ -114,7 +128,7 @@ services:
     ports:
       - 9000:9090
     deploy:
-      replicas: 2
+      replicas: 1
     volumes:
       - ../prometheus:/etc/prometheus
       - prometheus-data:/prometheus
